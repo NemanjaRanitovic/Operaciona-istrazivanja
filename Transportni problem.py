@@ -55,7 +55,7 @@ def getInitialOptimum(matrix,demand_vect,capacity_vect):
     print(counter)
     print(listofIndecies)
     print(matrix)
-    return np.sum(opt_matrix*matrix)
+    return np.sum(opt_matrix*matrix),initial_solutions
 
 def findMostElementsInRow(matrix):
     #returns the row index of given matrix
@@ -250,10 +250,10 @@ pocetna_matrica = np.array([[10,12,0]
                             ,[6,9,4]
                             ,[7,8,5] ])
 
-
 #pocetna resenja
-kriterijum = getInitialOptimum(pocetna_matrica,potraznja,kapacitet)
+kriterijum,matrix_MNC = getInitialOptimum(pocetna_matrica,potraznja,kapacitet)
 print("Kriterijum optimalnosti je:",kriterijum)
+print(matrix_MNC)
 
 #matrica za testiranje iterativnog postupka
 #posle ce da se koriste matrice dobijene primenom koda
@@ -262,35 +262,11 @@ matrix_MNC = np.array([[-1 ,-1 ,20],
                        [10,10, -1],
                        [-1 ,10, -1]])
 
-#mesto za pocetni potencijal
-
 initialU = findMostElementsInRow(matrix_MNC)
-##################################################################################################################################################################
-#NE ZABORAVI DA OBRISES OVO
-initialU = 2
-##################################################################################################################################################################
-#treba nam pocetna matrica da bi smo uzeli indekse popunjenih polja
-
-#Sve ovo u while dok je matrica newPrices nepozitivna
 
 potencijalU,potencijalV,indexes = createPotentials(initialU,matrix_MNC,pocetna_matrica)
-'''newPrices = calculatePrices(pocetna_matrica,potencijalU,potencijalV,indexes)
-#dobre nove cene
-pocetna_matrica = np.array([[10,12,0]
-                            ,[8,4,3]
-                            ,[6,9,4]
-                            ,[7,8,5] ])
-minI,minJ = findMinPrice(newPrices)
-indexes = checkForNeighbours(indexes,minI,minJ)
-matrix_MNC = getNewPrices(matrix_MNC,indexes,minI,minJ,newPrices)
-matrix_MNC = fixMatrix(matrix_MNC)
-print(matrix_MNC)
-print(pocetna_matrica)'''
-'''print("________________________________________________")
-potencijalU,potencijalV,indexes = createPotentials(initialU,matrix_MNC,pocetna_matrica)
-#potencijali su dobri'''
+
 newPrices = calculatePrices(pocetna_matrica,potencijalU,potencijalV,indexes)
-print("Pre iteracija",newPrices)
 
 while(True):    
     pocetna_matrica = np.array([[10,12,0]
@@ -301,15 +277,12 @@ while(True):
     potencijalU,potencijalV,indexes = createPotentials(initialU,matrix_MNC,pocetna_matrica)
     newPrices = calculatePrices(pocetna_matrica,potencijalU,potencijalV,indexes)
     minI,minJ = findMinPrice(newPrices)
-    print(">>>>>>")
-    print(newPrices)
     if(checkForNegativePrices(newPrices) == False):
         break
     indexes = checkForNeighbours(indexes,minI,minJ)
     matrix_MNC = getNewPrices(matrix_MNC,indexes,minI,minJ,newPrices)
     matrix_MNC = fixMatrix(matrix_MNC)
-    print(matrix_MNC)
-    print(pocetna_matrica)
+
 
 print(matrix_MNC)
 print(newPrices)
